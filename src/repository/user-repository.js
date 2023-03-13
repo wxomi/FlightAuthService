@@ -3,6 +3,15 @@ const { User } = require("../models/index");
 class UserRepository {
   async create(data) {
     try {
+      const existingUser = await User.findOne({
+        where: {
+          email: data.email,
+        },
+      });
+      if (existingUser) {
+        console.log(existingUser);
+        throw { error: "User with this email already exists" };
+      }
       const user = await User.create(data);
       return user;
     } catch (error) {
@@ -27,7 +36,7 @@ class UserRepository {
   async getById(userId) {
     try {
       const user = await User.findByPk(userId, {
-        attributes: ["email", "id"],
+        attributes: ["email", "id", "isVerified"],
       });
       return user;
     } catch (error) {

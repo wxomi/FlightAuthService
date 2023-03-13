@@ -31,11 +31,19 @@ const emailVerificationSender = (req, res, next) => {
       subject: "Email Verification",
 
       // This would be the text of email body
-      text: `Hi! There, You have recently visited 
-                our website and entered your email.
-                Please follow the given link to verify your email
-                http://localhost:3001/api/v1/verify/${token} 
-                Thanks`,
+      text: `Thank you for signing up for our service! We just wanted to confirm your email address to ensure that we have the correct information on file.
+
+      To complete the verification process, please click on the following link:
+      
+      http://localhost:3001/api/v1/verify/${token} 
+
+      
+      If you did not sign up for our service, please disregard this email.
+      
+      Thank you for your cooperation, and please do not hesitate to reach out to us if you have any questions or concerns.
+      Best regards,
+      Team 212
+      `,
     };
 
     transporter.sendMail(mailConfigurations, function (error, info) {

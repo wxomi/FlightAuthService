@@ -23,7 +23,7 @@ class UserService {
     try {
       //step 1- Fetch the user by email
       const user = await this.userRepository.getByEmail(email);
-      if (user.isVerified === 0) {
+      if (user.isVerified === false) {
         console.log("Email is not Verified, Please Verify it first");
         throw { error: "Email not Verified" };
       }
@@ -51,6 +51,10 @@ class UserService {
       const user = await this.userRepository.getById(response.id);
       if (!user) {
         throw { error: "No user with the corresponding token exists" };
+      }
+      console.log(user);
+      if (user.isVerified === false) {
+        throw { error: "Email is not Verified" };
       }
       return user.id;
     } catch (error) {
