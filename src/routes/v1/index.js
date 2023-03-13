@@ -1,13 +1,19 @@
 const express = require("express");
 
 const userController = require("../../controllers/user-controller");
-const { authRequestValidators } = require("../../middlewares/index");
+const {
+  authRequestValidators,
+  emailVerification,
+} = require("../../middlewares/index");
 
 const router = express.Router();
 
 router.post(
   "/signup",
-  [authRequestValidators.validateUserAuth],
+  [
+    authRequestValidators.validateUserAuth,
+    emailVerification.emailVerificationSender,
+  ],
   userController.create
 );
 router.post(
@@ -15,6 +21,9 @@ router.post(
   [authRequestValidators.validateUserAuth],
   userController.signIn
 );
+
+router.post("/verify/:token", userController.validateEmail);
+
 router.get("/isAuthenticated", userController.isAuthenticated);
 
 module.exports = router;

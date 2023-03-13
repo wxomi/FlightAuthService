@@ -6,12 +6,12 @@ const { JWT_KEY } = require("../config/serverConfig");
 
 class UserService {
   constructor() {
-    this.UserRepository = new UserRepository();
+    this.userRepository = new UserRepository();
   }
 
   async create(data) {
     try {
-      const user = await this.UserRepository.create(data);
+      const user = await this.userRepository.create(data);
       return user;
     } catch (error) {
       console.log("Something went wrong in the service layer");
@@ -22,7 +22,11 @@ class UserService {
   async signIn(email, plainPassword) {
     try {
       //step 1- Fetch the user by email
-      const user = await this.UserRepository.getByEmail(email);
+      const user = await this.userRepository.getByEmail(email);
+      if (user.isVerified === 0) {
+        console.log("Email is not Verified, Please Verify it first");
+        throw { error: "Email not Verified" };
+      }
       //step 2- Incoming Plane password with strong encrypted password
       const passwordMatch = this.checkPassword(plainPassword, user.password);
       if (!passwordMatch) {
@@ -44,7 +48,7 @@ class UserService {
       if (!response) {
         throw { error: "Invalid token" };
       }
-      const user = this.UserRepository.getById(response.id);
+      const user = await this.userRepository.getById(response.id);
       if (!user) {
         throw { error: "No user with the corresponding token exists" };
       }
@@ -53,6 +57,20 @@ class UserService {
       console.log("Something went wrong in the Auth Process");
       throw error;
     }
+  }
+  async validateEmail(token) {
+    // Verifying the JWT token
+    const response = jwt.verify(token, "ourSecretKey");
+    if (!response) {
+      throw {
+        error:
+          "Email verification failed, possibly the link is invalid or expired",
+      };
+    }
+    const result = await this.userRepository.verifyEmail(response.email, {
+      isVerified: 1,
+    });
+    return result;
   }
 
   createToken(user) {

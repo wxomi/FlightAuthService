@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
           isEmail: true,
         },
       },
+      isVerified: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
       password: {
         type: DataTypes.STRING,
         validate: {

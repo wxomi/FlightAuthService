@@ -7,6 +7,7 @@ const create = async (req, res) => {
     const response = await userService.create({
       email: req.body.email,
       password: req.body.password,
+      isVerified: 0,
     });
     return res.status(201).json({
       success: true,
@@ -69,8 +70,29 @@ const isAuthenticated = async (req, res) => {
   }
 };
 
+const validateEmail = async (req, res) => {
+  try {
+    const response = await userService.validateEmail(req.params.token);
+    return res.status(200).json({
+      message: "Email verified successfully",
+      success: true,
+      err: {},
+      data: response,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Something went wrong",
+      data: {},
+      success: false,
+      err: error,
+    });
+  }
+};
+
 module.exports = {
   create,
   signIn,
   isAuthenticated,
+  validateEmail,
 };
