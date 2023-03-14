@@ -26,4 +26,10 @@ router.post("/verify/:token", userController.validateEmail);
 
 router.get("/isAuthenticated", userController.isAuthenticated);
 
+router.get(
+  "/isAdmin",
+  [authRequestValidators.validateIsAdminRequest],
+  userController.isAdmin
+);
+
 module.exports = router;
