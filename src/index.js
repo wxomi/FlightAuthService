@@ -11,7 +11,7 @@ const prepareAndStartServer = async () => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  app.use("/api", apiRoutes);
+  app.use("/authservice/api", apiRoutes);
   app.listen(PORT, async () => {
     console.log(`Server Started Successfully at ${PORT} .`);
     if (DB_SYNC) {

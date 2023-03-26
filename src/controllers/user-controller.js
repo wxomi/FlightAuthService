@@ -60,9 +60,8 @@ const isAuthenticated = async (req, res) => {
       message: "User is authenticated and token is valid",
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({
-      message: "Something went wrong",
+      message: "Unauthenticated Token",
       data: {},
       success: false,
       err: error,
@@ -92,7 +91,8 @@ const validateEmail = async (req, res) => {
 
 const isAdmin = async (req, res) => {
   try {
-    const response = await userService.isAdmin(req.body.id);
+    const token = req.headers["x-access-token"];
+    const response = await userService.isAdmin(token);
     return res.status(200).json({
       message: "Successfully fetched wheather user is admin or not",
       success: true,

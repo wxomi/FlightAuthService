@@ -58,7 +58,6 @@ class UserService {
       if (!user) {
         throw { error: "No user with the corresponding token exists" };
       }
-      console.log(user);
       if (user.isVerified === false) {
         throw { error: "Email is not Verified" };
       }
@@ -112,9 +111,13 @@ class UserService {
     }
   }
 
-  isAdmin(userId) {
+  async isAdmin(token) {
     try {
-      return this.userRepository.isAdmin(userId);
+      const response = await jwt.verify(token, JWT_KEY);
+      if (!response) {
+        throw { error: "Invalid token" };
+      }
+      return this.userRepository.isAdmin(response.id);
     } catch (error) {
       console.log("Something went wrong in the service layer");
       throw error;
